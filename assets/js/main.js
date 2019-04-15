@@ -1,5 +1,4 @@
-const MTURK_SUBMIT = "https://www.mturk.com/mturk/externalSubmit";
-const SANDBOX_SUBMIT = "https://workersandbox.mturk.com/mturk/externalSubmit";
+const MTURK_SUBMIT_SUFFIX = "/mturk/externalSubmit";
 
 var config = {};
 
@@ -141,9 +140,11 @@ function addHiddenField(form, name, value) {
 }
 
 function submitHIT() {
-    var submitUrl = config.hitCreation.production ? MTURK_SUBMIT : SANDBOX_SUBMIT;
     if (config.advanced.externalSubmit) {
         submitUrl = config.advanced.externalSubmitUrl;
+    } else {
+        submitUrl = decodeURIComponent(gup("turkSubmitTo")) + MTURK_SUBMIT_SUFFIX;
+        console.log("submitUrl", submitUrl);
     }
     saveTaskData();
     clearMessage();

@@ -25,8 +25,7 @@
         "duration": 1200,
         "lifetime": 86400,
         "taskUrl": "",
-        "variants": [],
-        "production": false
+        "variants": []
     },
     "advanced": {
         "includeDemographicSurvey": false,
