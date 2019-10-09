@@ -74,15 +74,13 @@ var custom = {
          */
         switch (taskIndex) {
             case 0: // show the number
-                return {
-                    numberShown: taskInput.number
-                };
+                taskOutput.numberShown = taskInput.number;
+                break
             case 1: // record the number
-                return {
-                    userResponse: $("#exp-input").val()
-                };
-            case 2: // thanks
-                return {};
+                taskOutput.userResponse = $("#exp-input").val();
+                break
+            case 2: // thank-you message; no data collection required
+                break
         }
     },
     validateTask: function(taskInput, taskIndex, taskOutput) {

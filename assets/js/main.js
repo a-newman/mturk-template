@@ -6,33 +6,19 @@ var state = {
     numSubtasks: 0,
     taskIndex: gup("skipto") ? parseInt(gup("skipto")) : 0,
     taskInputs: {}, 
-    taskOutputs: [],
+    taskOutputs: {},
     assignmentId: gup("assignmentId"),
     workerId: gup("workerId"),
 };
 
 /* HELPERS */
 function saveTaskData() {
-    var data;
     if (isDemoSurvey()) {
         data = demoSurvey.collectData();
-    } else {
-        data = custom.collectData(getTaskInputs(state.taskIndex), state.taskIndex, getTaskOutputs(state.taskIndex));
-    }
-    if (config.meta.aggregate) {
         $.extend(state.taskOutputs, data);
     } else {
-        // TODO: figure out how best to include the demo survey data in the results? 
-        state.taskOutputs[state.taskIndex] = data;
+        custom.collectData(state.taskInputs, state.taskIndex, state.taskOutputs);
     }
-}
-
-function getTaskInputs(i) {
-    return config.meta.aggregate ? state.taskInputs : state.taskInputs[i];
-}
-
-function getTaskOutputs(i) {
-    return config.meta.aggregate ? state.taskOutputs : state.taskOutputs[i];
 }
 
 function updateTask() {
@@ -46,7 +32,7 @@ function updateTask() {
         // show the user's task
         demoSurvey.hideSurvey();
         $('#custom-experiment').show();
-        custom.showTask(getTaskInputs(state.taskIndex), state.taskIndex, getTaskOutputs(state.taskIndex));
+        custom.showTask(state.taskInputs, state.taskIndex, state.taskOutputs);
     }
     if (state.taskIndex == state.numSubtasks + config.advanced.includeDemographicSurvey - 1) {
         // last page 
@@ -81,7 +67,7 @@ function nextTask() {
         if (isDemoSurvey()) {
             failedValidation = demoSurvey.validateTask();
         } else {
-            failedValidation = custom.validateTask(getTaskInputs(state.taskIndex), state.taskIndex, getTaskOutputs(state.taskIndex));
+            failedValidation = custom.validateTask(state.taskInputs, state.taskIndex, state.taskOutputs);
         }
 
         if (failedValidation) {
@@ -151,7 +137,7 @@ function submitHIT() {
     clearMessage();
     $("#submit-button").addClass("loading");
     for (var i = 0; i < state.numSubtasks; i++) {
-        var failedValidation = custom.validateTask(getTaskInputs(i), i, getTaskOutputs(i));
+        var failedValidation = custom.validateTask(state.taskInputs, i, state.taskOutputs);
         if (failedValidation) {
             cancelSubmit(failedValidation.errorMessage);
             return;
@@ -334,11 +320,8 @@ function externalSubmit(submitUrl) {
 
 /* MAIN */
 $(document).ready(function() {
-    $.getJSON("config.json").done(function(data) {
+    $.getJSON("config.json").then(function(data) {
         config = data;
-        if (config.meta.aggregate) {
-            state.taskOutputs = {};
-        }
         custom.loadTasks().done(function(taskInputData) {
             state.numSubtasks = taskInputData[1];
             state.taskInputs = taskInputData[0];
@@ -346,6 +329,8 @@ $(document).ready(function() {
             demoSurvey.maybeLoadSurvey(config);
             setupButtons(config);
         });
+    }).catch(function(error) {
+        console.log("There was an error loading the config!", error);   
     });
 });
 

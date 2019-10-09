@@ -2,11 +2,10 @@
     "meta": {
         "title": "Experiment Title",
         "description": "desc",
-        "disclaimer": "This is a disclaimer. You are participating in this experiment voluntarily.",
-        "aggregate": false
+        "disclaimer": "This is a disclaimer. You are participating in this experiment voluntarily."
     },
     "instructions": {
-        "simple": "These are simple instructions for <b>3</b> tasks",
+        "simple": "These are simple instructions.",
         "steps": [
             "instruction1",
             "instruction2",

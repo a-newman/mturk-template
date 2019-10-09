@@ -33,8 +33,8 @@ var custom = {
          * 
          * returns: None
          */
-        $(".exp-data").text("Input for task " + taskInput.toString());
-        $("#exp-input").val(taskOutput);
+        $(".exp-data").text("Input for task " + taskInput[taskIndex].toString());
+        $("#exp-input").val(taskOutput[taskIndex]);
         $("#exp-input").focus();
         if (taskIndex == 1) {
             hideIfNotAccepted();
@@ -58,7 +58,9 @@ var custom = {
          *   config.meta.aggregate is true, an object with key-value pairs to be merged with the
          *   taskOutput object.
          */
-        return $("#exp-input").val();
+        if (!("responses" in taskOutput)) taskOutput.responses = []; 
+        var response = $("#exp-input").val();
+        taskOutput.responses[taskIndex] = response;
     },
     validateTask: function(taskInput, taskIndex, taskOutput) {
         /*
@@ -81,7 +83,8 @@ var custom = {
          * returns: falsey value if the data is valid; otherwise an object with a field "errorMessage"
          *    containing a string error message to display. 
          */
-        if (taskOutput.trim().length > 0) {
+        var response = taskOutput.responses[taskIndex];
+        if (response.trim().length > 0) {
             return false;
         } else {
             return {errorMessage: "please complete the task!"};
