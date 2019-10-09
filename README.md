@@ -15,7 +15,7 @@ To define your MTurk HIT, you only need to change things in three places: `index
 Find the section marked `<!-- vv CUSTOM EXPERIMENT MARKUP GOES HERE vv -->`, and add your custom HTML elements in that section (e.g. image divs, input boxes). Add `id`s to those HTML elements so you can easily refer to them with JQuery in the page's JavaScript (see `assets/js/custom.js`).
 
 #### `assets/js/custom.js`
-Fill out the 4 functions: `loadTasks`, `showTask`, `collectData`, and `validateTask`. These define behavior for loading initial data, displaying a task, storing data from a task, and validating a task. We recommmend starting by copying one of our template files: `assets/js/aggregate-template.js` if you have set `config.meta.aggregate=true` or `assets/js/no-aggregate-template.js` if you have set `config.meta.aggregate=false`. 
+Fill out the 4 functions: `loadTasks`, `showTask`, `collectData`, and `validateTask`. These define behavior for loading initial data, displaying a task, storing data from a task, and validating a task. We recommend looking at our example tasks (found in `assets/js/custom.js` and `assets/js/custom_2.js`) to get a sense of how they work.
 
 #### `config.json`
 Here, you can define your HIT's name, description, instructions, etc. Keep reading for a detailed description of the fields in the config. 
@@ -27,7 +27,6 @@ These fields are used to customize the UI template used for your task.
 * `meta.title` - the title of your task, displayed in the page title (string)
 * `meta.description` - a short overview of your task's purpose, displayed as bolded text right below the page title (string)
 * `meta.disclaimer` - the experiment disclaimer text displayed at the bottom of the page (string)
-* `meta.aggregate` - whether inputs and outputs for the task should be divided up by subtasks, or the same inputs and outputs should be stored across all subtasks. If false, outputs will be stored in an array of length `numSubtasks`; otherwise, they will be merged a single object. In general, setting this to `false` will be better if subtasks are repetitive and self-contained (for example, labeling a series of images), and this to `true` will be better if the behavior of one subtask depends on input/output from another subtask (for instance, labeling an image in one subtask and writing a description of it in the next). 
 
 ##### Instructions
 
@@ -58,7 +57,7 @@ These are advanced fields and features that will further customize your task.
 
 Config fields: 
 * `advanced.hideIfNotAccepted`: will automatically hide your HIT and show an error message if the user is viewing in an MTurk iFrame and has not yet accepted the task. The same behavior can be invoked manually from `custom.js` by calling `hideIfNotAccepted()`. (bool)
-* `advanced.includeDemographicSurvey` - setting this value to `true` automatically adds a demographic survey to the end of your task and collects/validates the data in it. 
+* `advanced.includeDemographicSurvey` - setting this value to `true` automatically adds a demographic survey to the end of your task and collects/validates the data in it. (bool) 
 * `advanced.externalSubmit`: configure the task as an external link that submits data to an external source, instead of an MTurk iframe that submits data to the MTurk back-end (see the next section for details). Requires that `advanced.externalSubmitUrl` be set. (bool)
 * `advanced.externalSubmitUrl`: if `externalSubmit` is `true`, the url or the relative path of the route to poste the data to. It is expected that this route will accept the data via POST request and return an object containing a key `key` containing a validation code. (string)
 

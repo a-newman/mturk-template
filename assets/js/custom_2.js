@@ -10,15 +10,17 @@ var custom = {
      *        progress bar and guide the task flow.
      */
     return $.get("").then(function() {
-      var taskData = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-      var numSubtasks = taskData.length;
+      var taskData = {
+        number: Math.floor(Math.random() * 10 + 1) // random number between 1 and 10
+      };
+      var numSubtasks = 3;
       return [taskData, numSubtasks];
     });
   },
   showTask: function(taskInput, taskIndex, taskOutput) {
     /*
-     * This function is called when the experiment view is unhidden or when the task index is
-     * changed. Should modify the UI to show the current subtask.
+     * This function is called when the experiment view is unhidden or when the task index is changed.
+     * Should modify the UI to show the current subtask.
      *
      * taskInput (obj): the input object from loadTasks
      * taskIndex (int): the number of the current subtask
@@ -27,11 +29,25 @@ var custom = {
      *
      * returns: None
      */
-    $(".exp-data").text("Input for task " + taskInput[taskIndex].toString());
-    $("#exp-input").val(taskOutput[taskIndex]);
-    $("#exp-input").focus();
-    if (taskIndex == 1) {
-      hideIfNotAccepted();
+    switch (taskIndex) {
+      case 0: // Step 1: show the number
+        var number = taskInput.number;
+        $(".exp-data").text("This is your number: " + number.toString());
+        $("#exp-input").hide();
+        break;
+      case 1: // Step 2: ask users to record the number
+        $(".exp-data").text("Please input the number you were shown.");
+        if (taskOutput.userResponse) {
+          $("#exp-input").val(taskOutput.userResponse);
+        }
+        $("#exp-input")
+          .show()
+          .focus();
+        break;
+      case 2: // Step 3: thank you page
+        $("#exp-input").hide();
+        $(".exp-data").text("Thanks for your input!");
+        break;
     }
   },
   collectData: function(taskInput, taskIndex, taskOutput) {
@@ -45,9 +61,16 @@ var custom = {
      *
      * returns: nothing
      */
-    if (!("responses" in taskOutput)) taskOutput.responses = [];
-    var response = $("#exp-input").val();
-    taskOutput.responses[taskIndex] = response;
+    switch (taskIndex) {
+      case 0: // show the number
+        taskOutput.numberShown = taskInput.number;
+        break;
+      case 1: // record the number
+        taskOutput.userResponse = $("#exp-input").val();
+        break;
+      case 2: // thank-you message; no data collection required
+        break;
+    }
   },
   validateTask: function(taskInput, taskIndex, taskOutput) {
     /*
@@ -66,13 +89,14 @@ var custom = {
      * returns: falsey value if the data is valid; otherwise an object with a field "errorMessage"
      *    containing a string error message to display.
      */
-    var response = taskOutput.responses[taskIndex];
-    if (response.trim().length > 0) {
-      return false;
-    } else {
-      return {
-        errorMessage: "please complete the task!"
-      };
+    if (taskIndex == 1) {
+      //validate user input
+      if (parseInt(taskOutput.userResponse.trim()) == taskInput.number) {
+        return false;
+      } else {
+        return { errorMessage: "incorrect response; try again!" };
+      }
     }
+    return false;
   }
 };
