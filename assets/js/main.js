@@ -3,6 +3,7 @@ const MTURK_SUBMIT_SUFFIX = "/mturk/externalSubmit";
 var config = {};
 
 var state = {
+    numSubtasks: 0,
     taskIndex: gup("skipto") ? parseInt(gup("skipto")) : 0,
     taskInputs: {}, 
     taskOutputs: [],
@@ -47,7 +48,7 @@ function updateTask() {
         $('#custom-experiment').show();
         custom.showTask(getTaskInputs(state.taskIndex), state.taskIndex, getTaskOutputs(state.taskIndex));
     }
-    if (state.taskIndex == config.meta.numSubtasks + config.advanced.includeDemographicSurvey - 1) {
+    if (state.taskIndex == state.numSubtasks + config.advanced.includeDemographicSurvey - 1) {
         // last page 
         $("#next-button").addClass("disabled");
         if (state.taskIndex != 0) {
@@ -73,7 +74,7 @@ function updateTask() {
 }
 
 function nextTask() {
-    if (state.taskIndex < (config.meta.numSubtasks + config.advanced.includeDemographicSurvey) - 1) {
+    if (state.taskIndex < (state.numSubtasks + config.advanced.includeDemographicSurvey) - 1) {
         saveTaskData();
 
         var failedValidation;
@@ -149,7 +150,7 @@ function submitHIT() {
     saveTaskData();
     clearMessage();
     $("#submit-button").addClass("loading");
-    for (var i = 0; i < config.meta.numSubtasks; i++) {
+    for (var i = 0; i < state.numSubtasks; i++) {
         var failedValidation = custom.validateTask(getTaskInputs(i), i, getTaskOutputs(i));
         if (failedValidation) {
             cancelSubmit(failedValidation.errorMessage);
@@ -203,7 +204,7 @@ function populateMetadata(config) {
 
     }
     $("#progress-bar").progress({
-        total: config.meta.numSubtasks + config.advanced.includeDemographicSurvey,
+        total: state.numSubtasks + config.advanced.includeDemographicSurvey,
     });
 }
 
@@ -221,7 +222,7 @@ function setupButtons() {
 
 function isDemoSurvey() {
     var useSurvey = config.advanced.includeDemographicSurvey;
-    var lastTask = state.taskIndex == config.meta.numSubtasks + config.advanced.includeDemographicSurvey -1;
+    var lastTask = state.taskIndex == state.numSubtasks + config.advanced.includeDemographicSurvey -1;
     return useSurvey && lastTask;
 }
 
@@ -338,8 +339,9 @@ $(document).ready(function() {
         if (config.meta.aggregate) {
             state.taskOutputs = {};
         }
-        custom.loadTasks(config.meta.numSubtasks).done(function(taskInputs) {
-            state.taskInputs = taskInputs;
+        custom.loadTasks().done(function(taskInputData) {
+            state.numSubtasks = taskInputData[1];
+            state.taskInputs = taskInputData[0];
             populateMetadata(config);
             demoSurvey.maybeLoadSurvey(config);
             setupButtons(config);

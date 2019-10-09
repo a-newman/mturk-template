@@ -1,5 +1,5 @@
 var custom = {
-    loadTasks: function(numSubtasks) {
+    loadTasks: function() {
         /*
          * This function is called on page load and should implement the promise interface
          *
@@ -9,7 +9,9 @@ var custom = {
          * one object for each task; else, an object that will be made available to all subtasks
          */
         return $.get("").then(function() {
-            return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            var taskData = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            var numSubtasks = taskData.length;
+            return [taskData, numSubtasks];
         });
     },
     showTask: function(taskInput, taskIndex, taskOutput) {
