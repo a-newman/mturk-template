@@ -1,17 +1,23 @@
 var custom = {
-    loadTasks: function(numSubtasks) {
+    loadTasks: function() {
         /*
          * This function is called on page load and should implement the promise interface
          *
          * numSubtasks - int indicating what length array to return (how many subtasks this task should have)
          * 
-         * returns: if config.meta.aggregate is set to false, an array of objects with length config.meta.numTasks,
-         * one object for each task; else, an object that will be made available to all subtasks
+         * returns: array[taskData, numSubtasks] 
+         *      task Data: if config.meta.aggregate is set to false, an array of objects with length 
+         *        config.meta.numTasks, one object for each task; else, an object that will be made 
+         *        available to all subtasks
+         *      numSubtasks: the number of discrete subtasks in your task; will be used to set the
+         *        progress bar and guide the task flow. 
          */
         return $.get("").then(function() {
-            return {
+            var taskData = {
                 number: Math.floor(Math.random()*10 + 1) // random number between 1 and 10
             };
+            var numSubtasks = 3; 
+            return [taskData, numSubtasks]; 
         });
     },
     showTask: function(taskInput, taskIndex, taskOutput) {

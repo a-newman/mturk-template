@@ -18,7 +18,7 @@ Find the section marked `<!-- vv CUSTOM EXPERIMENT MARKUP GOES HERE vv -->`, and
 Fill out the 4 functions: `loadTasks`, `showTask`, `collectData`, and `validateTask`. These define behavior for loading initial data, displaying a task, storing data from a task, and validating a task. We recommmend starting by copying one of our template files: `assets/js/aggregate-template.js` if you have set `config.meta.aggregate=true` or `assets/js/no-aggregate-template.js` if you have set `config.meta.aggregate=false`. 
 
 #### `config.json`
-Here, you can define your HIT's name, description, number of subtasks, instructions, etc. Keep reading for a detailed description of the fields in the config. 
+Here, you can define your HIT's name, description, instructions, etc. Keep reading for a detailed description of the fields in the config. 
 
 ##### Metadata
 
@@ -26,7 +26,6 @@ These fields are used to customize the UI template used for your task.
 
 * `meta.title` - the title of your task, displayed in the page title (string)
 * `meta.description` - a short overview of your task's purpose, displayed as bolded text right below the page title (string)
-* `meta.numSubtasks` - the number of subtasks your task will have (int)
 * `meta.disclaimer` - the experiment disclaimer text displayed at the bottom of the page (string)
 * `meta.aggregate` - whether inputs and outputs for the task should be divided up by subtasks, or the same inputs and outputs should be stored across all subtasks. If false, outputs will be stored in an array of length `numSubtasks`; otherwise, they will be merged a single object. In general, setting this to `false` will be better if subtasks are repetitive and self-contained (for example, labeling a series of images), and this to `true` will be better if the behavior of one subtask depends on input/output from another subtask (for instance, labeling an image in one subtask and writing a description of it in the next). 
 

@@ -2,7 +2,6 @@
     "meta": {
         "title": "Experiment Title",
         "description": "desc",
-        "numSubtasks": 3,
         "disclaimer": "This is a disclaimer. You are participating in this experiment voluntarily.",
         "aggregate": false
     },
